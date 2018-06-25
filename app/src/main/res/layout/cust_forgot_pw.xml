@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.CustForgotPW"
+    android:orientation="vertical"
+    android:background="@color/background"
+    android:padding="@dimen/padding_activity">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Forgot your password?"
+        android:fontFamily="@font/rancho"
+        android:textSize="@dimen/titleTV"
+        android:gravity="center_horizontal"
+        android:textColor="@color/black"
+        android:layout_marginTop="@dimen/padding_activity"
+        android:layout_marginBottom="@dimen/padding_activity"
+        />
+    <EditText
+        android:id="@+id/etEmail"
+        android:layout_marginTop="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Email"
+        android:textColorHint="@color/textColorHint"
+        android:inputType="textEmailAddress"
+        android:padding="@dimen/paddingEditText"
+        android:textSize="@dimen/etTextSize"
+        android:fontFamily="@font/rancho"
+        android:background="@color/background_edit_text"
+        android:textColor="@color/black"/>
+    <EditText
+        android:id="@+id/etNewPassword"
+        android:layout_marginTop="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="New Password"
+        android:textColorHint="@color/textColorHint"
+        android:inputType="textPassword"
+        android:padding="@dimen/paddingEditText"
+        android:textSize="@dimen/etTextSize"
+        android:fontFamily="@font/rancho"
+        android:background="@color/background_edit_text"
+        android:textColor="@color/black"/>
+    <EditText
+        android:id="@+id/etConfirmNewPassword"
+        android:layout_marginTop="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Confirm New Password"
+        android:textColorHint="@color/textColorHint"
+        android:inputType="textPassword"
+        android:padding="@dimen/paddingEditText"
+        android:textSize="@dimen/etTextSize"
+        android:fontFamily="@font/rancho"
+        android:background="@color/background_edit_text"
+        android:textColor="@color/black"/>
+    <Button
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:text="Submit"
+        android:fontFamily="@font/rancho"
+        android:textSize="@dimen/etTextSize"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/bgbutton"
+        android:layout_margin="@dimen/padding_activity"/>
+</LinearLayout>

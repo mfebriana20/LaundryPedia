@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    tools:context=".activity.CustEditProfile">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/padding_activity"
+            android:paddingRight="@dimen/padding_activity"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/padding_activity_kecil">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="ACCOUNT INFORMATION"
+                android:textSize="@dimen/titleTV"
+                android:fontFamily="@font/rancho"
+                android:paddingBottom="@dimen/padding_activity_kecil"
+                android:paddingTop="@dimen/padding_activity_kecil"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/profile"/>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="false"
+                    android:text="Change Profile"
+                    android:fontFamily="@font/rancho"
+                    android:textSize="@dimen/etTextSize"
+                    android:background="@color/bgbutton"
+                    android:layout_marginLeft="@dimen/padding_activity"/>
+            </LinearLayout>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/etFullname"
+                android:hint="Full Name"
+                android:fontFamily="@font/rancho"
+                android:textSize="@dimen/etTextSize"
+                android:layout_marginTop="@dimen/padding_activity"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/etPhone"
+                android:hint="Phone"
+                android:textSize="@dimen/etTextSize"
+                android:fontFamily="@font/rancho"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/etCity"
+                android:hint="City"
+                android:textSize="@dimen/etTextSize"
+                android:fontFamily="@font/rancho"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/etAddress"
+                android:hint="Address"
+                android:textSize="@dimen/etTextSize"
+                android:fontFamily="@font/rancho"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/etPostCode"
+                android:hint="Post Code"
+                android:textSize="@dimen/etTextSize"
+                android:fontFamily="@font/rancho"/>
+            <Button
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:text="Save"
+                android:background="@color/bgbutton"
+                android:textSize="@dimen/etTextSize"
+                android:fontFamily="@font/rancho"
+                android:textAllCaps="false"
+                android:id="@+id/btSave"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/etNewPassword"
+                android:hint="New Password"
+                android:fontFamily="@font/rancho"
+                android:textSize="@dimen/etTextSize"
+                android:layout_marginTop="@dimen/padding_activity"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/etConfirmNewPassword"
+                android:hint="Confirm New Password"
+                android:textSize="@dimen/etTextSize"
+                android:fontFamily="@font/rancho"/>
+
+            <Button
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:text="Change"
+                android:background="@color/bgbutton"
+                android:textSize="@dimen/etTextSize"
+                android:fontFamily="@font/rancho"
+                android:textAllCaps="false"
+                android:id="@+id/btChange"/>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
