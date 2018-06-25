@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.media.MediaCas;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,17 +17,25 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.google.gson.Gson;
 import com.laundrypedia.laundrypedia.R;
 import com.laundrypedia.laundrypedia.helper.SQLiteHandlerLaundry;
 import com.laundrypedia.laundrypedia.helper.SessionManager;
+import com.laundrypedia.laundrypedia.service.api.ApiClient;
+import com.laundrypedia.laundrypedia.service.api.ApiInterface;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LaundryLoginActivity extends Activity {
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+
+public class LaundryLoginActivity extends AppCompatActivity {
     private static final String TAG = LaundryRegisterActivity.class.getSimpleName();
     private Button btnLogin, btnRegister;
     private EditText etEmail, etPassword;
@@ -71,7 +80,7 @@ public class LaundryLoginActivity extends Activity {
                 // Check for empty data in the form
                 if (!email.isEmpty() && !password.isEmpty()) {
                     // login user
-                    checkLogin(email, password);
+                    login(email, password);
                 } else {
                     // Prompt user to enter credentials
                     Toast.makeText(getApplicationContext(),
@@ -93,87 +102,72 @@ public class LaundryLoginActivity extends Activity {
             }
         });
     }
-    private void checkLogin(final String email, final String password) {
-        // Tag used to cancel the request
-        String tag_string_req = "req_login";
 
+
+    private void login(final String email, final String password) {
         pDialog.setMessage("Logging in ...");
         showDialog();
-
-        StringRequest strReq = new StringRequest(Request.Method.POST,
-                AppConfig.URL_LOGIN_LAUNDRY, new Response.Listener<String>() {
-
+        ApiInterface service = ApiClient.getClient();
+        Call<ResponseBody> call = service.loginCust(email, password);
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(String response) {
-                Log.d(TAG, "Login Response: " + response.toString());
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull retrofit2.Response<ResponseBody> response) {
                 hideDialog();
+                if (response.isSuccessful()) {
+                    try {
+                        String respon = response.body().string();
+                        JSONObject jObj = new JSONObject(respon);
+                        boolean error = jObj.getBoolean("error");
 
-                try {
-                    JSONObject jObj = new JSONObject(response);
-                    boolean error = jObj.getBoolean("error");
+                        // Check for error node in json
+                        if (!error) {
+                            // user successfully logged in
+                            // Create login session
+                            session.setLogin(true);
 
-                    // Check for error node in json
-                    if (!error) {
-                        // user successfully logged in
-                        // Create login session
-                        session.setLogin(true);
+                            // Now store the user in SQLite
+                            String uid = jObj.getString("uid");
 
-                        // Now store the user in SQLite
-                        String uid = jObj.getString("uid");
+                            JSONObject user = jObj.getJSONObject("user");
+                            String name = user.getString("name");
+                            String email = user.getString("email");
+                            String created_at = user
+                                    .getString("created_at");
 
-                        JSONObject user = jObj.getJSONObject("user");
-                        String name = user.getString("name");
-                        String email = user.getString("email");
-                        String created_at = user
-                                .getString("created_at");
+                            // Inserting row in users table
+                            db.addUser(name, email, uid, created_at);
 
-                        // Inserting row in users table
-                        db.addUser(name, email, uid, created_at);
-
-                        // Launch main activity
-                        Intent intent = new Intent(LaundryLoginActivity.this,
-                                LaundryHome.class);
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        // Error in login. Get the error message
-                        String errorMsg = jObj.getString("error_msg");
-                        Toast.makeText(getApplicationContext(),
-                                errorMsg, Toast.LENGTH_LONG).show();
+                            // Launch main activity
+                            Intent intent = new Intent(LaundryLoginActivity.this,
+                                    LaundryHome.class);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            // Error in login. Get the error message
+                            String errorMsg = jObj.getString("error_msg");
+                            Toast.makeText(getApplicationContext(),
+                                    errorMsg, Toast.LENGTH_LONG).show();
+                        }
+                    } catch (JSONException e) {
+                        // JSON error
+                        e.printStackTrace();
+                        Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    // JSON error
-                    e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), response.message(), Toast.LENGTH_LONG).show();
                 }
-
             }
-        }, new Response.ErrorListener() {
 
             @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "Login Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_LONG).show();
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
                 hideDialog();
             }
-        }) {
-
-            @Override
-            protected Map<String, String> getParams() {
-                // Posting parameters to login url
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("email", email);
-                params.put("password", password);
-
-                return params;
-            }
-
-        };
-
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
+        });
     }
+
 
     private void showDialog() {
         if (!pDialog.isShowing())
