@@ -106,9 +106,7 @@ public class CustLoginActivity extends Activity {
 
                     //check for error node in json
                     if (!error) {
-                        //user successfully logged in
-                        //create logging session
-                        session.setLogin(true);
+
 
                         //now store the user in sqlite
                         String uid = jobj.getString("uid");
@@ -117,6 +115,10 @@ public class CustLoginActivity extends Activity {
                         String fullname = user.getString("fullname");
                         String email = user.getString("email");
                         String created_at = user.getString("created_at");
+
+                        //user successfully logged in
+                        //create logging session
+                        session.setLogin(true,uid);
 
                         //inserting row in user table
                         db.addUser(fullname, email, uid, created_at);

@@ -20,6 +20,8 @@ public class LayananModel {
     @Expose
     private String description;
 
+    private int qty = 0;
+
     public String getId() {
         return id;
     }
@@ -58,5 +60,13 @@ public class LayananModel {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getQty() {
+        return qty;
+    }
+
+    public void setQty(int qty) {
+        this.qty = qty;
     }
 }

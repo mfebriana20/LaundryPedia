@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,6 +17,7 @@ public class LayananAdapter extends RecyclerView.Adapter<LayananAdapter.ViewHold
 
     private ArrayList<LayananModel> layanan;
     private BtnClickListener mClickListener = null;
+
     public LayananAdapter(ArrayList<LayananModel> layanan, BtnClickListener listener) {
         this.layanan = layanan;
         mClickListener = listener;
@@ -29,6 +31,8 @@ public class LayananAdapter extends RecyclerView.Adapter<LayananAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(LayananAdapter.ViewHolder holder, int position) {
+        final LayananModel item = layanan.get(position);
+
         holder.nama.setText(layanan.get(position).getNamaLayanan());
         holder.itemPrice.setText(layanan.get(position).getItemPrice());
         holder.desc.setText(layanan.get(position).getDescription());
@@ -40,33 +44,61 @@ public class LayananAdapter extends RecyclerView.Adapter<LayananAdapter.ViewHold
         holder.pic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mClickListener!=null){
+                if (mClickListener != null) {
                     mClickListener.onBtnClick((Integer) v.getTag());
                 }
             }
         });
+        holder.tvQty.setText(String.valueOf(item.getQty()));
+
+        holder.btnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int newQuantity = item.getQty() + 1;
+                item.setQty(newQuantity);
+                notifyDataSetChanged();
+            }
+        });
+
+        holder.btnRemove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (item.getQty() > 0) {
+                    int newQuantity = item.getQty() - 1;
+                    item.setQty(newQuantity);
+                    notifyDataSetChanged();
+                }
+            }
+        });
+
+
     }
 
     @Override
     public int getItemCount() {
-        return (layanan  == null) ? 0 : layanan.size();
+        return layanan.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView nama, itemPrice, desc;
+        private TextView nama, itemPrice, desc, tvQty;
         ImageView pic;
+        Button btnRemove, btnAdd;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
-            nama = (TextView) itemView.findViewById(R.id.tvSeviceName);
-            itemPrice = (TextView) itemView.findViewById(R.id.tvItemPrice);
-            desc = (TextView) itemView.findViewById(R.id.tvServiceDescription);
-            pic = (ImageView) itemView.findViewById(R.id.ServiceLogo);
+            nama = itemView.findViewById(R.id.tvSeviceName);
+            itemPrice = itemView.findViewById(R.id.tvItemPrice);
+            desc = itemView.findViewById(R.id.tvServiceDescription);
+            pic = itemView.findViewById(R.id.ServiceLogo);
+            btnAdd = itemView.findViewById(R.id.btnAdd);
+            btnRemove = itemView.findViewById(R.id.btnRemove);
+            tvQty = itemView.findViewById(R.id.tvQty);
+
         }
     }
 
     public interface BtnClickListener {
-        public abstract void onBtnClick(int position);
+        void onBtnClick(int position);
     }
 }

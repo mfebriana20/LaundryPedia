@@ -23,8 +23,7 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity
-            android:name=".activity.RegisterActivity"/>
+        <activity android:name=".activity.RegisterActivity" />
         <activity android:name=".activity.LaundryLoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -45,7 +44,8 @@
         <activity
             android:name=".activity.LaundryDetail"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activity.HistoryOrderActivity"></activity>
+        <activity android:name=".activity.HistoryOrderActivity" />
+        <activity android:name=".activity.ConfirmationOrderActivity"></activity>
     </application>
 
 </manifest>

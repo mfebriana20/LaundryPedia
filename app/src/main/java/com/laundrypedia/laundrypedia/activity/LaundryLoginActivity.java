@@ -116,7 +116,6 @@ public class LaundryLoginActivity extends AppCompatActivity {
                         if (!error) {
                             // user successfully logged in
                             // Create login session
-                            session.setLogin(true);
 
                             // Now store the user in SQLite
                             String uid = jObj.getString("uid");
@@ -124,9 +123,9 @@ public class LaundryLoginActivity extends AppCompatActivity {
                             JSONObject user = jObj.getJSONObject("user");
                             String fullname = user.getString("fullname");
                             String email = user.getString("email");
-                            String created_at = user
-                                    .getString("created_at");
+                            String created_at = user.getString("created_at");
 
+                            session.setLogin(true,uid);
                             // Inserting row in users table
                             db.addUser(fullname, email, uid, created_at);
 

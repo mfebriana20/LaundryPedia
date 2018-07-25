@@ -1,5 +1,6 @@
 package com.laundrypedia.laundrypedia.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,10 +11,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.laundrypedia.laundrypedia.R;
+import com.laundrypedia.laundrypedia.activity.DetailOrder;
 import com.laundrypedia.laundrypedia.adapter.LayananAdapter;
+import com.laundrypedia.laundrypedia.helper.MenuClickRecyclerview;
+import com.laundrypedia.laundrypedia.model.LaundryModel;
 import com.laundrypedia.laundrypedia.model.LayananList;
 import com.laundrypedia.laundrypedia.model.LayananModel;
 import com.laundrypedia.laundrypedia.service.api.ApiClient;
@@ -29,7 +35,7 @@ import retrofit2.Response;
 public class ServicesFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private ArrayList<LayananModel> layanan ;
+    private ArrayList<LayananModel> layanan;
     private LayananAdapter layananAdapter;
 
     public ServicesFragment() {
@@ -49,7 +55,9 @@ public class ServicesFragment extends Fragment {
             public void onResponse(@NonNull Call<LayananList> call, Response<LayananList> response) {
                 if (response.isSuccessful()) {
                     LayananList layananList = response.body();
-                    layanan =new ArrayList<>(Arrays.asList(layananList.getLayanan())); //wes entuk data
+                    layanan = new ArrayList<>(Arrays.asList(layananList.getLayanan())); //wes entuk data
+
+                    Log.e("size", "" + layanan.size());
                     layananAdapter = new LayananAdapter(layanan, new LayananAdapter.BtnClickListener() {
                         @Override
                         public void onBtnClick(int position) {
@@ -83,13 +91,38 @@ public class ServicesFragment extends Fragment {
         //    IdBinatu = getActivity().getIntent().getIntExtra("id_binatu",0);
 
         recyclerView = view.findViewById(R.id.rvLayanan);
+        Button btnOrder = view.findViewById(R.id.btnOrder);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(view.getContext());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(llm);
         // Inflate the layout for this fragment
-        if (savedInstanceState== null){
+        if (savedInstanceState == null) {
             loadJSON();
         }
+
+
+        btnOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (serviceSelected().size() > 0) {
+                    Intent intent = new Intent(getActivity(), DetailOrder.class);
+                    intent.putExtra("layananSelected", new Gson().toJson(serviceSelected()));
+                    startActivity(intent);
+                }
+            }
+        });
+
     }
+
+    private ArrayList<LayananModel> serviceSelected() {
+        ArrayList<LayananModel> items = new ArrayList<>();
+        for (LayananModel item : layanan) {
+            if (item.getQty() > 0) {
+                items.add(item);
+            }
+        }
+        return items;
+    }
+
 }
