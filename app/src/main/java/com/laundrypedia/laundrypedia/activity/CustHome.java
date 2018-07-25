@@ -1,12 +1,11 @@
 package com.laundrypedia.laundrypedia.activity;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
+import android.util.Log;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -15,20 +14,29 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.laundrypedia.laundrypedia.R;
-import com.laundrypedia.laundrypedia.adapter.FilmAdapter;
-import com.laundrypedia.laundrypedia.model.Film;
+import com.laundrypedia.laundrypedia.adapter.LaundryAdapter;
+import com.laundrypedia.laundrypedia.model.LaundryList;
+import com.laundrypedia.laundrypedia.model.LaundryModel;
+import com.laundrypedia.laundrypedia.service.api.ApiClient;
+import com.laundrypedia.laundrypedia.service.api.ApiInterface;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CustHome extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private List<Film> filmList = new ArrayList<>();
-    private RecyclerView recyclerView;
-    private FilmAdapter filmAdapter;
+    public RecyclerView recyclerView;
+    public ArrayList<LaundryModel> binatu;
+    private LaundryAdapter laundryAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,14 +44,8 @@ public class CustHome extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        Intent intent = getIntent();
+        Log.d("called","oke");
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -53,29 +55,47 @@ public class CustHome extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        //setCurrentFragment(HomeFragment.class);
+        initViews();
 
-        //recycleview
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
 
-        filmAdapter = new FilmAdapter(filmList);
+    }
+
+    private void initViews() {
+        recyclerView = (RecyclerView)findViewById(R.id.rvLaundryHome);
+        recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(filmAdapter);
+        loadJSON();
     }
 
-    private void DataFilm(){
-        Film film = new Film("Sherina", "petualangan", "2003");
-        filmList.add(film);
+    private void loadJSON() {
+        ApiInterface service = ApiClient.getClient();
+       int a = getIntent().getIntExtra("id_binatu",0);
+        Call<LaundryList> call = service.getJSONLaundry("http://laundrypedia.store/cust/selectHome.php");
+        call.enqueue(new Callback<LaundryList>() {
+            @Override
+            public void onResponse(Call<LaundryList> call, Response<LaundryList> response) {
+                if(response.isSuccessful()) {
+                    LaundryList laundryList = response.body();
+                    binatu = new ArrayList<>(Arrays.asList(laundryList.getBinatu()));
+                    laundryAdapter  =  new LaundryAdapter(binatu);
+                    recyclerView.setAdapter(laundryAdapter);
 
-        film = new Film("Spiderman", "aksi", "2009");
-        filmList.add(film);
+                } else {
+                    Toast.makeText(getApplicationContext(),"Error load data!", Toast.LENGTH_LONG).show();
+                }
 
-        film = new Film("Thor", "aksi", "2017");
-        filmList.add(film);
+            }
 
-        filmAdapter.notifyDataSetChanged();
+            @Override
+            public void onFailure(Call<LaundryList> call, Throwable t) {
+                Log.d("Error",t.getMessage());
+
+            }
+        });
     }
+
 
     @Override
     public void onBackPressed() {
@@ -115,18 +135,26 @@ public class CustHome extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_account) {
-            // Handle the camera action
-        } else if (id == R.id.nav_balance) {
+        if (id == R.id.nav_home) {
+            Intent intent= new Intent(getApplicationContext(),CustHome.class);
+            startActivity(intent);
+        } else if (id == R.id.nav_order) {
+            Intent intent = new Intent(getApplicationContext(), HistoryOrderActivity.class);
+            startActivity(intent);
 
-        } else if (id == R.id.nav_discuss) {
+        } else if (id == R.id.nav_balance) {
+            Intent intent = new Intent(getApplicationContext(), HistoryBalance.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_help) {
-
-        } else if (id == R.id.nav_home) {
-
-        } else if (id == R.id.nav_order) {
-
+            Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", "cs@laundrypedia.store", null));
+            startActivity(Intent.createChooser(intent, "Customer Help"));
+        } else if (id == R.id.nav_account) {
+            Intent intent = new Intent(getApplicationContext(), EditProfile.class);
+            startActivity(intent);
+        } else if (id == R.id.nav_logout) {
+            item.setChecked(true);
+            startActivity(new Intent(getApplicationContext(), CustLoginActivity.class));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

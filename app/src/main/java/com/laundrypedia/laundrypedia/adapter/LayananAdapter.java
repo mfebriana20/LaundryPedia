@@ -4,49 +4,69 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.laundrypedia.laundrypedia.R;
-import com.laundrypedia.laundrypedia.model.Layanan;
+import com.laundrypedia.laundrypedia.model.LayananModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class LayananAdapter extends RecyclerView.Adapter<LayananAdapter.LayananViewHolder> {
+public class LayananAdapter extends RecyclerView.Adapter<LayananAdapter.ViewHolder> {
 
-    private ArrayList<Layanan> dataList;
-
-    public LayananAdapter(ArrayList<Layanan> dataList) {
-        this.dataList = dataList;
+    private ArrayList<LayananModel> layanan;
+    private BtnClickListener mClickListener = null;
+    public LayananAdapter(ArrayList<LayananModel> layanan, BtnClickListener listener) {
+        this.layanan = layanan;
+        mClickListener = listener;
     }
 
     @Override
-    public LayananViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view = layoutInflater.inflate(R.layout.cust_select_service, parent, false);
-        return new LayananViewHolder(view);
+    public LayananAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_services, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(LayananViewHolder holder, int position) {
-        holder.txtNamaLayanan.setText(dataList.get(position).getNamaLayanan());
-        holder.txtDesc.setText(dataList.get(position).getDescription());
-        holder.txtItemPrice.setText(dataList.get(position).getItemPrice());
+    public void onBindViewHolder(LayananAdapter.ViewHolder holder, int position) {
+        holder.nama.setText(layanan.get(position).getNamaLayanan());
+        holder.itemPrice.setText(layanan.get(position).getItemPrice());
+        holder.desc.setText(layanan.get(position).getDescription());
+//        Picasso.with(context)
+//                .load(layanan.get(position).getPicture()).resize(50, 50)
+//                .into(holder.pic);
+
+        holder.pic.setTag(position);
+        holder.pic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mClickListener!=null){
+                    mClickListener.onBtnClick((Integer) v.getTag());
+                }
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return (dataList != null) ? dataList.size() : 0;
+        return (layanan  == null) ? 0 : layanan.size();
     }
 
-    public class LayananViewHolder extends RecyclerView.ViewHolder{
-        private TextView txtNamaLayanan, txtDesc, txtItemPrice;
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        private TextView nama, itemPrice, desc;
+        ImageView pic;
 
-        public LayananViewHolder(View itemView) {
+        public ViewHolder(View itemView) {
             super(itemView);
-            txtNamaLayanan = (TextView) itemView.findViewById(R.id.tvNamaLayanan);
-            txtDesc = (TextView) itemView.findViewById(R.id.tvDescription);
-            txtItemPrice = (TextView) itemView.findViewById(R.id.tvPrice);
+
+            nama = (TextView) itemView.findViewById(R.id.tvSeviceName);
+            itemPrice = (TextView) itemView.findViewById(R.id.tvItemPrice);
+            desc = (TextView) itemView.findViewById(R.id.tvServiceDescription);
+            pic = (ImageView) itemView.findViewById(R.id.ServiceLogo);
         }
+    }
+
+    public interface BtnClickListener {
+        public abstract void onBtnClick(int position);
     }
 }

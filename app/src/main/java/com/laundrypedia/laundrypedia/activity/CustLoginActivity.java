@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -25,9 +26,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CustLoginActivity extends Activity {
-    private static final String TAG = CustRegisterActivity.class.getSimpleName();
+    private static final String TAG = RegisterActivity.class.getSimpleName();
     private Button btnLogin;
-    private Button btnRegister;
+    private TextView btnRegister;
     private EditText etEmail;
     private EditText etPassword;
     private ProgressDialog pDialog;
@@ -38,11 +39,11 @@ public class CustLoginActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.cust_activity_login);
+        setContentView(R.layout.activity_login);
         etEmail = (EditText) findViewById(R.id.etEmail);
         etPassword = (EditText) findViewById(R.id.etPassword);
         btnLogin = (Button) findViewById(R.id.btnLogin);
-        btnRegister = (Button) findViewById(R.id.btnRegister);
+        btnRegister = (TextView) findViewById(R.id.btnRegister);
         
         //progress dialog
         pDialog = new ProgressDialog(this);
@@ -57,7 +58,7 @@ public class CustLoginActivity extends Activity {
         //chech if user already logged in or not
         if (session.isLoggedIn()){
             //user is already logged in . take to main act
-            Intent intent = new Intent(CustLoginActivity.this, CustRegisterActivity.class);
+            Intent intent = new Intent(CustLoginActivity.this, RegisterActivity.class);
             startActivity(intent);
             finish();
         }
@@ -82,7 +83,7 @@ public class CustLoginActivity extends Activity {
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent ii = new Intent(CustLoginActivity.this,CustRegisterActivity.class);
+                Intent ii = new Intent(CustLoginActivity.this,RegisterActivity.class);
                 startActivity(ii);
                 finish();
             }

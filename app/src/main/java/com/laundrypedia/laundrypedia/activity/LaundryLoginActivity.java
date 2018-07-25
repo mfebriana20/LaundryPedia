@@ -1,23 +1,16 @@
 package com.laundrypedia.laundrypedia.activity;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.media.MediaCas;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.google.gson.Gson;
 import com.laundrypedia.laundrypedia.R;
 import com.laundrypedia.laundrypedia.helper.SQLiteHandlerLaundry;
 import com.laundrypedia.laundrypedia.helper.SessionManager;
@@ -28,17 +21,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 
 public class LaundryLoginActivity extends AppCompatActivity {
-    private static final String TAG = LaundryRegisterActivity.class.getSimpleName();
-    private Button btnLogin, btnRegister;
+    private static final String TAG = RegisterActivity.class.getSimpleName();
+    private Button btnLogin;
     private EditText etEmail, etPassword;
+    private TextView btnRegister;
     private ProgressDialog pDialog;
     private SessionManager session;
     private SQLiteHandlerLaundry db;
@@ -50,7 +42,7 @@ public class LaundryLoginActivity extends AppCompatActivity {
         etEmail = (EditText) findViewById(R.id.etEmail);
         etPassword = (EditText) findViewById(R.id.etPassword);
         btnLogin = (Button) findViewById(R.id.btnLogin);
-        btnRegister = (Button) findViewById(R.id.btnRegister);
+        btnRegister = (TextView) findViewById(R.id.btnRegister);
 
         // Progress dialog
         pDialog = new ProgressDialog(this);
@@ -65,7 +57,7 @@ public class LaundryLoginActivity extends AppCompatActivity {
         // Check if user is already logged in or not
         if (session.isLoggedIn()) {
             // User is already logged in. Take him to main activity
-            Intent intent = new Intent(LaundryLoginActivity.this, LaundryRegisterActivity.class);
+            Intent intent = new Intent(LaundryLoginActivity.this, CustHome.class);
             startActivity(intent);
             finish();
         }
@@ -79,6 +71,7 @@ public class LaundryLoginActivity extends AppCompatActivity {
 
                 // Check for empty data in the form
                 if (!email.isEmpty() && !password.isEmpty()) {
+
                     // login user
                     login(email, password);
                 } else {
@@ -96,7 +89,7 @@ public class LaundryLoginActivity extends AppCompatActivity {
 
             public void onClick(View view) {
                 Intent i = new Intent(getApplicationContext(),
-                        LaundryRegisterActivity.class);
+                        RegisterActivity.class);
                 startActivity(i);
                 finish();
             }
@@ -129,17 +122,17 @@ public class LaundryLoginActivity extends AppCompatActivity {
                             String uid = jObj.getString("uid");
 
                             JSONObject user = jObj.getJSONObject("user");
-                            String name = user.getString("name");
+                            String fullname = user.getString("fullname");
                             String email = user.getString("email");
                             String created_at = user
                                     .getString("created_at");
 
                             // Inserting row in users table
-                            db.addUser(name, email, uid, created_at);
+                            db.addUser(fullname, email, uid, created_at);
 
                             // Launch main activity
                             Intent intent = new Intent(LaundryLoginActivity.this,
-                                    LaundryHome.class);
+                                    CustHome.class);
                             startActivity(intent);
                             finish();
                         } else {

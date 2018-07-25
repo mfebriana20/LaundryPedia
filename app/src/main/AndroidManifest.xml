@@ -24,37 +24,28 @@
             android:resource="@array/preloaded_fonts" />
 
         <activity
-            android:name=".activity.CustRegisterActivity"
-            android:label="@string/register_activity" />
-        <activity android:name=".activity.LaundryLoginActivity" >
+            android:name=".activity.RegisterActivity"/>
+        <activity android:name=".activity.LaundryLoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.LaundryRegisterActivity" />
-        <activity android:name=".activity.CustLoginActivity">
-
-        </activity>
-        <activity android:name=".activity.CustFormRegistActivity" />
-        <activity android:name=".activity.LaundryFormRegistActivity" />
-        <activity android:name=".activity.CustEditProfile" />
-        <activity android:name=".activity.LaundryEditProfile" />
+        <activity android:name=".activity.CustLoginActivity" />
+        <activity android:name=".activity.FormRegistActivity" />
+        <activity android:name=".activity.EditProfile" />
         <activity
             android:name=".activity.CustHome"
-            android:label="@string/title_activity_cust_home"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".activity.CustForgotPW" />
-        <activity android:name=".activity.LaundryForgotPW" />
-        <activity android:name=".activity.CustTopUP" />
-        <activity android:name=".activity.CustSelectService" />
-        <activity android:name=".activity.CustDetailOrder" />
-        <activity android:name=".activity.CustDescPage" />
-        <activity android:name=".activity.LaundryAddService" />
-        <activity android:name=".activity.CustHistoryBalance" />
-        <activity android:name=".activity.LaundryHistoryBalance" />
-        <activity android:name=".activity.LaundryHome"/>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activity.ForgotPW" />
+        <activity android:name=".activity.TopUp" />
+        <activity android:name=".activity.DetailOrder" />
+        <activity android:name=".activity.HistoryBalance" />
+        <activity
+            android:name=".activity.LaundryDetail"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activity.HistoryOrderActivity"></activity>
     </application>
 
 </manifest>
